@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -14,13 +15,27 @@ public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
+    private TextView mSandwichDescription;
+    private TextView mSandwichOrigin;
+    private TextView mSandwichIngredients;
+    private TextView mSandwichAlsoKnownAs;
+
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        mSandwichDescription = findViewById(R.id.description_tv);
+        mSandwichOrigin = findViewById(R.id.origin_tv);
+        mSandwichIngredients = findViewById(R.id.ingredients_tv);
+        mSandwichAlsoKnownAs = findViewById(R.id.also_known_tv);
 
         ImageView ingredientsIv = findViewById(R.id.image_iv);
+
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -49,6 +64,10 @@ public class DetailActivity extends AppCompatActivity {
                 .into(ingredientsIv);
 
         setTitle(sandwich.getMainName());
+        mSandwichOrigin.setText(sandwich.getPlaceOfOrigin());
+        mSandwichAlsoKnownAs.setText(sandwich.getAlsoKnownAs().toString().replaceAll("\\[", "").replaceAll("\\]",""));
+        mSandwichIngredients.setText(sandwich.getIngredients().toString().replaceAll("\\[", "").replaceAll("\\]",""));
+        mSandwichDescription.setText(sandwich.getDescription());
     }
 
     private void closeOnError() {
