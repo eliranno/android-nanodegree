@@ -14,7 +14,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+            android:layout_marginVertical="@dimen/activity_vertical_margin">
 
             <ImageView
                 android:id="@+id/image_iv"
@@ -22,7 +24,8 @@
                 android:layout_height="200dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/sandwich_picture_content_description"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
             <TextView
                 android:layout_width="wrap_content"

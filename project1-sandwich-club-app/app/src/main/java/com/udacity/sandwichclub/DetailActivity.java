@@ -3,6 +3,7 @@ package com.udacity.sandwichclub;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,16 +59,11 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
-        populateUI();
+        populateUI(sandwich);
         Picasso.with(this)
                 .load(sandwich.getImage())
+                .placeholder(R.drawable.unavailable)
                 .into(ingredientsIv);
-
-        setTitle(sandwich.getMainName());
-        mSandwichOrigin.setText(sandwich.getPlaceOfOrigin());
-        mSandwichAlsoKnownAs.setText(sandwich.getAlsoKnownAs().toString().replaceAll("\\[", "").replaceAll("\\]",""));
-        mSandwichIngredients.setText(sandwich.getIngredients().toString().replaceAll("\\[", "").replaceAll("\\]",""));
-        mSandwichDescription.setText(sandwich.getDescription());
     }
 
     private void closeOnError() {
@@ -75,7 +71,10 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();
     }
 
-    private void populateUI() {
-
+    private void populateUI(Sandwich sandwich) {
+        setTitle(sandwich.getMainName());
+        mSandwichOrigin.setText(sandwich.getPlaceOfOrigin());
+        mSandwichIngredients.setText(TextUtils.join(", ", sandwich.getIngredients()));
+        mSandwichDescription.setText(sandwich.getDescription());
     }
 }
