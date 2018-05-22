@@ -56,13 +56,12 @@ public class NetworkUtils {
     /**
      * This function attempts to make HTTP connection to the end point specified
      * in the Uri object and retrieve the data in JSON format
-     * @param uri - uri object
+     * @param url - URL object to connect
      *@return String that contains the response from the end-point.
      */
 
-    public String makeHttpRequest(Uri uri) throws MalformedURLException,IOException{
+    public String makeHttpRequest(URL url) throws MalformedURLException,IOException{
         try {
-            URL url = new URL(uri.toString());
             URLConnection connection = url.openConnection();
             InputStream is = connection.getInputStream();
             Scanner s = new Scanner(is).useDelimiter("//A");
