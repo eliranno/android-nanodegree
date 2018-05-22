@@ -13,9 +13,12 @@ import java.util.List;
 public class DownloadMoviesInfoTask extends AsyncTask<URL,Void,String> {
 
     private Context mContext;
+    private MovieListHandler mMovieListHandler;
 
-    public DownloadMoviesInfoTask(Context context){
+    public DownloadMoviesInfoTask(Context context,MovieListHandler movieListHandler){
+        super();
         mContext = context;
+        mMovieListHandler = movieListHandler;
     }
 
     @Override
@@ -26,8 +29,7 @@ public class DownloadMoviesInfoTask extends AsyncTask<URL,Void,String> {
             moviesJsonString = networkUtils.makeHttpRequest(urls[0]);
         }
         catch (IOException e){
-            Toast toast = Toast.makeText(mContext,R.string.connection_error,Toast.LENGTH_SHORT);
-            toast.show();
+            mMovieListHandler.handleConnectionError();
         }
         return moviesJsonString;
     }
@@ -38,12 +40,11 @@ public class DownloadMoviesInfoTask extends AsyncTask<URL,Void,String> {
             if (moviesJsonString !=null && !moviesJsonString.equals("")) {
                 JsonMovieParser MovieParser = new JsonMovieParser(moviesJsonString);
                 List<Movie> movieList = MovieParser.parse();
-
+                mMovieListHandler.handleData(movieList);
             }
         }
         catch (JSONException e){
-            Toast toast = Toast.makeText(mContext,R.string.process_data_error,Toast.LENGTH_SHORT);
-            toast.show();
+            mMovieListHandler.handleProcessingDataError();
         }
     }
 }

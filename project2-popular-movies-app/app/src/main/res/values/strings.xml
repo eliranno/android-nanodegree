@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">project2-popular-movies-app</string>
+    <string name="app_name">Popular Movie App</string>
     <string name="connection_error">Connection to Server Failed. Try Again Later</string>
     <string name="process_data_error">An Error Occurred While Processing The Data</string>
 
