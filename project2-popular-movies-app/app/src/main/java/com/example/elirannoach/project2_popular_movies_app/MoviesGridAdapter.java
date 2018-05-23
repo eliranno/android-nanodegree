@@ -2,6 +2,7 @@ package com.example.elirannoach.project2_popular_movies_app;
 
 import android.content.Context;
 import android.media.Image;
+import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -38,7 +40,14 @@ public class MoviesGridAdapter extends ArrayAdapter<Movie> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.movie_grid_item,parent,false);
         }
         ImageView movieImage = (ImageView) convertView.findViewById(R.id.iv_movie_grid_poster);
-        Picasso.with(getContext()).load(R.drawable.test_image).placeholder(R.drawable.test_image).into(movieImage);
+        TextView movieTitle = (TextView) convertView.findViewById(R.id.tv_movie_title);
+        movieTitle.setText(mMovieList.get(position).getTitle());
+        String movieImagePath = movie.getImageRelativePath();
+        Uri.Builder uriBuilder = new Uri.Builder();
+        uriBuilder.scheme(NetworkUtils.SCHEME);
+        uriBuilder.authority(NetworkUtils.AUTHORITY_IMAGE);
+        uriBuilder.path(NetworkUtils.PATH_IMAGE+NetworkUtils.IMAGE_SIZE_BIG+movieImagePath);
+        Picasso.with(getContext()).load(uriBuilder.toString()).into(movieImage);
         return convertView;
 
 

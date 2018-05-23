@@ -38,6 +38,16 @@ public class Movie {
         mReleaseDate = releaseDate;
     }
 
+    public String getTitle(){
+        return this.mTitle;
+    }
+
+    public String getImageRelativePath(){
+        return mPosterPath;
+    }
+
+
+
     public static class MovieBuilder{
 
         private int mId = -1;
@@ -54,6 +64,7 @@ public class Movie {
         private boolean mIsAdult = false;
         private String mOverview = "";
         private String mReleaseDate = "";
+
 
         public MovieBuilder(){
 

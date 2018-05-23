@@ -16,13 +16,14 @@ import java.util.Scanner;
 
 public class NetworkUtils {
 
-    static final String IMAGE_SIZE = "w185";
+    static final String IMAGE_SIZE_BIG = "/w185";
     static final String SCHEME = "http";
     static final String ATHORITY_MOVIE = "api.themoviedb.org";
     static final String AUTHORITY_IMAGE = "image.tmdb.org";
     static final String PATH_POPULAR_MOVIE = "/3/movie/popular";
-    static final String PATH_TOP_RATED = "/3/movie/top/rated";
+    static final String PATH_TOP_RATED = "/3/movie/top_rated";
     static final String PATH_IMAGE = "/t/p";
+    static final String IMAGE_SIZE_SMALL = "/w154";
     static final String QUERY_KEY_TAG = "api_key";
     static final String TAG = "NetworkUtils";
     static final String KEY_VALUE  = "0d3fecc6c9418d69e5d5541e5f4d7d33";  //TODO : remove this from here

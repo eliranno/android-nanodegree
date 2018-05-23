@@ -2,6 +2,10 @@
     <string name="app_name">Popular Movie App</string>
     <string name="connection_error">Connection to Server Failed. Try Again Later</string>
     <string name="process_data_error">An Error Occurred While Processing The Data</string>
+    <string-array name="sort_categories">
+        <item>Popular</item>
+        <item>Top Rated</item>
+    </string-array>
 
 
 </resources>
