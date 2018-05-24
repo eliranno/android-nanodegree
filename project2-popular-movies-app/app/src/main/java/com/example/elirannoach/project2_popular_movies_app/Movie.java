@@ -1,8 +1,15 @@
 package com.example.elirannoach.project2_popular_movies_app;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
-public class Movie {
+public class Movie implements Parcelable {
 
     private int mId;
     private int mVoteCount;
@@ -38,6 +45,16 @@ public class Movie {
         mReleaseDate = releaseDate;
     }
 
+    public Movie(Parcel in){
+        List<String> stringList = new ArrayList();
+        in.readStringList(stringList);
+        mTitle = stringList.get(0);
+        mReleaseDate = stringList.get(1);
+        mOverview = stringList.get(2);
+        mPosterPath = stringList.get(3);
+        mAverageVote = in.readDouble();
+    }
+
     public String getTitle(){
         return this.mTitle;
     }
@@ -46,7 +63,34 @@ public class Movie {
         return mPosterPath;
     }
 
+    public String getReleaseDate() { return mReleaseDate; }
 
+    public double getAverageVote() {return mAverageVote;}
+
+    public String getOverview() {return mOverview;}
+
+    //Note that order of variable writing and reading is important, you should read and write variable in same order.
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringList(new ArrayList<String>(Arrays.asList(mTitle,mReleaseDate,mOverview,mPosterPath)));
+        dest.writeDouble(mAverageVote);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 
     public static class MovieBuilder{
 

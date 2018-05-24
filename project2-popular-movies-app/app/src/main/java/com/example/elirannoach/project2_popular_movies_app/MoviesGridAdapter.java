@@ -1,6 +1,7 @@
 package com.example.elirannoach.project2_popular_movies_app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.net.Uri;
 import android.support.annotation.DrawableRes;
@@ -29,7 +30,7 @@ public class MoviesGridAdapter extends ArrayAdapter<Movie> {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         // Gets the Movie object from the adapter at the appropriate position.
         Movie movie = mMovieList.get(position);
         // Adapters recycle views to AdapterViews.
@@ -48,6 +49,17 @@ public class MoviesGridAdapter extends ArrayAdapter<Movie> {
         uriBuilder.authority(NetworkUtils.AUTHORITY_IMAGE);
         uriBuilder.path(NetworkUtils.PATH_IMAGE+NetworkUtils.IMAGE_SIZE_BIG+movieImagePath);
         Picasso.with(getContext()).load(uriBuilder.toString()).into(movieImage);
+        movieImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Movie movie = mMovieList.get(position);
+                Intent intent = new Intent(getContext(),MovieInfoActivity.class);
+                intent.putExtra("movieObj",movie);
+                getContext().startActivity(intent);
+
+
+            }
+        });
         return convertView;
     }
 
