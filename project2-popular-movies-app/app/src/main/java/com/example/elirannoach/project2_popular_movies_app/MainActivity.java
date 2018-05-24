@@ -3,15 +3,12 @@ package com.example.elirannoach.project2_popular_movies_app;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -20,9 +17,8 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.Inflater;
 
-public class MainActivity extends AppCompatActivity implements MovieListHandler {
+public class MainActivity extends AppCompatActivity implements MovieListReceiver {
 
     Toast mToast;
     GridView mGridView;
@@ -44,12 +40,32 @@ public class MainActivity extends AppCompatActivity implements MovieListHandler 
         MenuItem item = menu.findItem(R.id.sort_by_spinner);
         Spinner spinner = (Spinner) item.getActionView();
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.sort_categories, android.R.layout.simple_spinner_item);
+                R.array.sort_categories, R.layout.sort_by_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //String[] categories = getResources().getStringArray(R.array.sort_categories);
+                populateUI(SortCategories.values()[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         return true;
     }
 
+    /**
+     * This function crafts the URL message and uses the NetworkUtils to send
+     * HTTP request to get the movie list. it will indirectly invoke one of the
+     * MovieListReceiver interface methods
+     * from http://themoviebd.org/ website.
+     * @param category enum - one of the availavle categories to display
+     *@return void
+     */
 
     private void populateUI(SortCategories category){
         Map<String,String> queryMap = new Hashtable<>();
@@ -79,14 +95,14 @@ public class MainActivity extends AppCompatActivity implements MovieListHandler 
     }
 
     @Override
-    public void handleConnectionError() {
+    public void handleNetworkError() {
         mToast.setText(R.string.connection_error);
         mToast.setDuration(Toast.LENGTH_SHORT);
         mToast.show();
     }
 
     @Override
-    public void handleProcessingDataError() {
+    public void handleDataError() {
         mToast.setText(R.string.process_data_error);
         mToast.setDuration(Toast.LENGTH_SHORT);
         mToast.show();
@@ -96,8 +112,6 @@ public class MainActivity extends AppCompatActivity implements MovieListHandler 
     public void handleData(List<Movie> movieList) {
         MoviesGridAdapter adapter = new MoviesGridAdapter(this,0,movieList);
         mGridView.setAdapter(adapter);
-
-
     }
 
     public enum SortCategories{

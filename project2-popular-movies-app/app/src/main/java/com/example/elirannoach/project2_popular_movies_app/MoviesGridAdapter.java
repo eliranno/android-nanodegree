@@ -49,17 +49,10 @@ public class MoviesGridAdapter extends ArrayAdapter<Movie> {
         uriBuilder.path(NetworkUtils.PATH_IMAGE+NetworkUtils.IMAGE_SIZE_BIG+movieImagePath);
         Picasso.with(getContext()).load(uriBuilder.toString()).into(movieImage);
         return convertView;
-
-
-
     }
 
     @Override
     public int getCount() {
         return mMovieList.size();
-    }
-
-    public static class MovieViewHolder{
-        ImageView imageView;
     }
 }

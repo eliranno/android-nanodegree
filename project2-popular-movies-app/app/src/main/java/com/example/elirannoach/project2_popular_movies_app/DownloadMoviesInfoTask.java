@@ -2,7 +2,6 @@ package com.example.elirannoach.project2_popular_movies_app;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -13,12 +12,12 @@ import java.util.List;
 public class DownloadMoviesInfoTask extends AsyncTask<URL,Void,String> {
 
     private Context mContext;
-    private MovieListHandler mMovieListHandler;
+    private MovieListReceiver mMovieListReceiver;
 
-    public DownloadMoviesInfoTask(Context context,MovieListHandler movieListHandler){
+    public DownloadMoviesInfoTask(Context context,MovieListReceiver movieListReceiver){
         super();
         mContext = context;
-        mMovieListHandler = movieListHandler;
+        mMovieListReceiver = movieListReceiver;
     }
 
     @Override
@@ -29,7 +28,7 @@ public class DownloadMoviesInfoTask extends AsyncTask<URL,Void,String> {
             moviesJsonString = networkUtils.makeHttpRequest(urls[0]);
         }
         catch (IOException e){
-            mMovieListHandler.handleConnectionError();
+            mMovieListReceiver.handleNetworkError();
         }
         return moviesJsonString;
     }
@@ -40,11 +39,11 @@ public class DownloadMoviesInfoTask extends AsyncTask<URL,Void,String> {
             if (moviesJsonString !=null && !moviesJsonString.equals("")) {
                 JsonMovieParser MovieParser = new JsonMovieParser(moviesJsonString);
                 List<Movie> movieList = MovieParser.parse();
-                mMovieListHandler.handleData(movieList);
+                mMovieListReceiver.handleData(movieList);
             }
         }
         catch (JSONException e){
-            mMovieListHandler.handleProcessingDataError();
+            mMovieListReceiver.handleDataError();
         }
     }
 }
