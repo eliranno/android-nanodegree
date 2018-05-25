@@ -13,11 +13,14 @@ public class DownloadMoviesInfoTask extends AsyncTask<URL,Void,String> {
 
     private Context mContext;
     private MovieListReceiver mMovieListReceiver;
+    private boolean mRequestFlag;
 
     public DownloadMoviesInfoTask(Context context,MovieListReceiver movieListReceiver){
         super();
         mContext = context;
         mMovieListReceiver = movieListReceiver;
+        mRequestFlag = false;
+
     }
 
     @Override
@@ -26,9 +29,10 @@ public class DownloadMoviesInfoTask extends AsyncTask<URL,Void,String> {
         try {
             NetworkUtils networkUtils = new NetworkUtils(mContext);
             moviesJsonString = networkUtils.makeHttpRequest(urls[0]);
+            mRequestFlag = true;
         }
         catch (IOException e){
-            mMovieListReceiver.handleNetworkError();
+            mRequestFlag = false;
         }
         return moviesJsonString;
     }
@@ -36,10 +40,13 @@ public class DownloadMoviesInfoTask extends AsyncTask<URL,Void,String> {
     @Override
     protected void onPostExecute(String moviesJsonString) {
         try{
-            if (moviesJsonString !=null && !moviesJsonString.equals("")) {
+            if (moviesJsonString !=null && !moviesJsonString.equals("") && mRequestFlag) {
                 JsonMovieParser MovieParser = new JsonMovieParser(moviesJsonString);
                 List<Movie> movieList = MovieParser.parse();
                 mMovieListReceiver.handleData(movieList);
+            }
+            else{
+                mMovieListReceiver.handleNetworkError();
             }
         }
         catch (JSONException e){
