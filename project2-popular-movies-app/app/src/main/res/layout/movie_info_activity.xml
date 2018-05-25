@@ -14,11 +14,12 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="230dp"
+                android:layout_height="320dp"
                 android:id="@+id/iv_movie_info_poster"
                 android:layout_gravity="center"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginBottom="20dp"
+                android:scaleType="fitXY"/>
 
             <TextView
                 android:layout_width="match_parent"

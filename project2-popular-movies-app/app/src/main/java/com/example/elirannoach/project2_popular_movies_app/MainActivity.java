@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements MovieListReceiver
         populateUI(SortCategories.POPULAR);
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu_view, menu);
@@ -96,14 +97,12 @@ public class MainActivity extends AppCompatActivity implements MovieListReceiver
 
     @Override
     public void handleNetworkError() {
-        mToast.setText(R.string.connection_error);
-        mToast.setDuration(Toast.LENGTH_SHORT);
-        mToast.show();
+        mToast.makeText(this,R.string.connection_error,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void handleDataError() {
-        mToast.setText(R.string.process_data_error);
+        mToast.setText(getString(R.string.process_data_error));
         mToast.setDuration(Toast.LENGTH_SHORT);
         mToast.show();
     }
