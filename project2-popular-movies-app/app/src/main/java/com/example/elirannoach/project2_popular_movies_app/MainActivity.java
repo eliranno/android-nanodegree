@@ -1,8 +1,11 @@
 package com.example.elirannoach.project2_popular_movies_app;
 
+
 import android.net.Uri;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,6 +14,10 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.CursorAdapter;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,11 +25,20 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements MovieListReceiver {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Movie>> {
 
     Toast mToast;
     GridView mGridView;
     NetworkUtils mNetworkUtils;
+    private static final int LOADER_UNIQUE_ID = 1;
+    private Loader<List<Movie>> mMoviesWebContentLoader;
+    private MoviesGridAdapter mAdapter;
+    private SortCategories mSelectedCategory;
+
+    public enum SortCategories{
+        POPULAR,
+        TOP_RATED
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +47,11 @@ public class MainActivity extends AppCompatActivity implements MovieListReceiver
         mToast = new Toast(this);
         mGridView = (GridView) findViewById(R.id.gl_movie_id);
         mNetworkUtils = new NetworkUtils(this);
-        populateUI(SortCategories.POPULAR);
-    }
+        mSelectedCategory = savedInstanceState != null ?
+                SortCategories.valueOf(savedInstanceState.getString("category")) : SortCategories.POPULAR;
+        populateUI(mSelectedCategory);
 
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -44,13 +62,15 @@ public class MainActivity extends AppCompatActivity implements MovieListReceiver
                 R.array.sort_categories, R.layout.sort_by_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setSelected(false);  // must.
+        spinner.setSelection(mSelectedCategory.ordinal(),true);  //must
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //String[] categories = getResources().getStringArray(R.array.sort_categories);
+                //TODO : is there a way to restart the module that will now have a bundle with different data ?
+                getSupportLoaderManager().destroyLoader(LOADER_UNIQUE_ID);
                 populateUI(SortCategories.values()[position]);
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -68,53 +88,57 @@ public class MainActivity extends AppCompatActivity implements MovieListReceiver
      *@return void
      */
 
-    private void populateUI(SortCategories category){
-        Map<String,String> queryMap = new Hashtable<>();
-        queryMap.put(NetworkUtils.QUERY_KEY_TAG,NetworkUtils.KEY_VALUE);
-        DownloadMoviesInfoTask task = new DownloadMoviesInfoTask(this,this);
+    private void populateUI(SortCategories category) {
+        Map<String, String> queryMap = new Hashtable<>();
+        queryMap.put(NetworkUtils.QUERY_KEY_TAG, NetworkUtils.KEY_VALUE);
         Uri uri;
-        URL url;
-        try{
-            switch (category) {
-                case POPULAR:
-                    uri = mNetworkUtils.buildMovieUri(NetworkUtils.PATH_POPULAR_MOVIE, queryMap);
-                    break;
-                case TOP_RATED:
-                    uri = mNetworkUtils.buildMovieUri(NetworkUtils.PATH_TOP_RATED, queryMap);
-                    break;
-                default:
-                    uri = mNetworkUtils.buildMovieUri(NetworkUtils.PATH_POPULAR_MOVIE, queryMap);
-                    break;
+        switch (category) {
+            case POPULAR:
+                uri = mNetworkUtils.buildMovieUri(NetworkUtils.PATH_POPULAR_MOVIE, queryMap);
+                break;
+            case TOP_RATED:
+                uri = mNetworkUtils.buildMovieUri(NetworkUtils.PATH_TOP_RATED, queryMap);
+                break;
+            default:
+                uri = mNetworkUtils.buildMovieUri(NetworkUtils.PATH_POPULAR_MOVIE, queryMap);
+                break;
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString("uri_string", uri.toString());
+        mSelectedCategory = category;
+        mMoviesWebContentLoader = getSupportLoaderManager().initLoader(LOADER_UNIQUE_ID, bundle, this);
+    }
+
+    @Override
+    public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
+            try {
+                URL url = new URL(args.getString("uri_string"));
+                return new MoviesWebContentLoader(this, url);
+            } catch (MalformedURLException e) {
+                Log.e("MAIN_ACTIVITY", "no url was set");
+                return new MoviesWebContentLoader(this);
             }
-            url = new URL(uri.toString());
-            task.execute(url);
-        }
-        catch (MalformedURLException e){
-            e.printStackTrace();
-        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
+        mAdapter = new MoviesGridAdapter(this,0,data);
+        mGridView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Movie>> loader) {
+
 
     }
 
     @Override
-    public void handleNetworkError() {
-        mToast.makeText(this,R.string.connection_error,Toast.LENGTH_SHORT).show();
+    protected void onSaveInstanceState(Bundle outState) {
+
+        outState.putString("category",mSelectedCategory.name());
+        super.onSaveInstanceState(outState);
+
     }
 
-    @Override
-    public void handleDataError() {
-        mToast.setText(getString(R.string.process_data_error));
-        mToast.setDuration(Toast.LENGTH_SHORT);
-        mToast.show();
-    }
-
-    @Override
-    public void handleData(List<Movie> movieList) {
-        MoviesGridAdapter adapter = new MoviesGridAdapter(this,0,movieList);
-        mGridView.setAdapter(adapter);
-    }
-
-    public enum SortCategories{
-        POPULAR,
-        TOP_RATED
-    }
+    //TODO: use mToast to display error messages
 }
