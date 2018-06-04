@@ -2,22 +2,22 @@ package com.example.elirannoach.project2_popular_movies_app;
 
 
 import android.net.Uri;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.CursorAdapter;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -25,15 +25,18 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import static android.support.v7.widget.RecyclerView.*;
+
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Movie>> {
 
     Toast mToast;
-    GridView mGridView;
+    RecyclerView mRecycleView;
     NetworkUtils mNetworkUtils;
     private static final int LOADER_UNIQUE_ID = 1;
     private Loader<List<Movie>> mMoviesWebContentLoader;
-    private MoviesGridAdapter mAdapter;
+    private MovieListRecycleViewAdapter mViewAdapter;
     private SortCategories mSelectedCategory;
+    private static final int COLUMNS_NUM = 4;
 
     public enum SortCategories{
         POPULAR,
@@ -45,7 +48,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mToast = new Toast(this);
-        mGridView = (GridView) findViewById(R.id.gl_movie_id);
+        mRecycleView = (RecyclerView) findViewById(R.id.gl_movie_id);
+        mRecycleView.setLayoutManager(new GridLayoutManager(this,COLUMNS_NUM));
         mNetworkUtils = new NetworkUtils(this);
         mSelectedCategory = savedInstanceState != null ?
                 SortCategories.valueOf(savedInstanceState.getString("category")) : SortCategories.POPULAR;
@@ -122,8 +126,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
-        mAdapter = new MoviesGridAdapter(this,0,data);
-        mGridView.setAdapter(mAdapter);
+        mViewAdapter = new MovieListRecycleViewAdapter(this,data);
+        mRecycleView.setAdapter(mViewAdapter);
     }
 
     @Override
