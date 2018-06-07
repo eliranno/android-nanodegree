@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<ListPreference
+    android:key="prefSetBackGroud"
+    android:entries="@array/backgroundColors"
+    android:summary="Set the backgroud color in the main page"
+    android:entryValues="@array/backgroundColorEntries"
+    android:title="@string/pref_backgroud_color">
+</ListPreference>
+</PreferenceScreen>

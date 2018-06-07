@@ -2,9 +2,25 @@
     <string name="app_name">Popular Movie App</string>
     <string name="connection_error">Connection to Server Failed. Try Again Later</string>
     <string name="process_data_error">An Error Occurred While Processing The Data</string>
+    <string name="pref_backgroud_color">Background Color Preference</string>
+    <string name="favorite_db_table_delete">Erase Database</string>
     <string-array name="sort_categories">
         <item>Popular</item>
         <item>Top Rated</item>
+    </string-array>
+
+    <string-array name="backgroundColors">
+        <item name="1">Gray</item>
+        <item name="2">White</item>
+        <item name="3">Red</item>
+        <item name="4">Blue</item>
+    </string-array>
+
+    <string-array name="backgroundColorEntries">
+        <item name="1">#D9D9D9</item>
+        <item name="2">#FFFFFF</item>
+        <item name="3">#FFB3B3</item>
+        <item name="4">#6666FF</item>
     </string-array>
 
 

@@ -30,7 +30,7 @@ public class MovieInfoActivity extends AppCompatActivity {
 
     public String createMovieInfoText(Movie movie){
         return String.format("Movie Title: %s\r\n\n Release Date: %s\r\n\n" +
-                "Overview: %s \r\n\n Average Vote: %f \r\n\n",movie.getTitle(),
+                "Overview: %s \r\n\n Average Vote: %.2f \r\n\n",movie.getTitle(),
                 movie.getReleaseDate(),movie.getOverview(),movie.getAverageVote());
     }
 
