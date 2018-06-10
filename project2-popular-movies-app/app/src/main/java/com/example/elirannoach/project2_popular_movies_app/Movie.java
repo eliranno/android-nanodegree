@@ -53,6 +53,7 @@ public class Movie implements Parcelable {
         mOverview = stringList.get(2);
         mPosterPath = stringList.get(3);
         mAverageVote = in.readDouble();
+        mId = in.readInt();
     }
 
     public String getTitle(){
@@ -69,11 +70,14 @@ public class Movie implements Parcelable {
 
     public String getOverview() {return mOverview;}
 
+    public int getMovieId() {return mId;}
+
     //Note that order of variable writing and reading is important, you should read and write variable in same order.
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStringList(new ArrayList<String>(Arrays.asList(mTitle,mReleaseDate,mOverview,mPosterPath)));
         dest.writeDouble(mAverageVote);
+        dest.writeInt(mId);
     }
 
     @Override

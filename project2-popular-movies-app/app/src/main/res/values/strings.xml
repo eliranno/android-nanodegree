@@ -4,9 +4,11 @@
     <string name="process_data_error">An Error Occurred While Processing The Data</string>
     <string name="pref_backgroud_color">Background Color Preference</string>
     <string name="favorite_db_table_delete">Erase Database</string>
+    <string name="favorite_insert_successfull">Movie was added to My Favorite list</string>
     <string-array name="sort_categories">
         <item>Popular</item>
         <item>Top Rated</item>
+        <item>My Favorite</item>
     </string-array>
 
     <string-array name="backgroundColors">

@@ -2,9 +2,12 @@ package com.example.elirannoach.project2_popular_movies_app;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +33,7 @@ import java.util.Map;
 
 import static android.support.v7.widget.RecyclerView.*;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Movie>> {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Movie>>, AdapterView.OnItemSelectedListener {
 
     Toast mToast;
     RecyclerView mRecycleView;
@@ -41,9 +44,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private SortCategories mSelectedCategory;
     private static final int COLUMNS_NUM = 4;
 
+
     public enum SortCategories{
         POPULAR,
-        TOP_RATED
+        TOP_RATED,
+        FAVORITE
     }
 
     @Override
@@ -56,6 +61,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mNetworkUtils = new NetworkUtils(this);
         mSelectedCategory = savedInstanceState != null ?
                 SortCategories.valueOf(savedInstanceState.getString("category")) : SortCategories.POPULAR;
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String color = sharedPreferences.getString("prefSetBackGround",getString(0+R.color.lightGray));
+        findViewById(R.id.fl_main_activity).setBackgroundColor(Color.parseColor(color));
         populateUI(mSelectedCategory);
 
     }
@@ -71,19 +79,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         spinner.setAdapter(adapter);
         spinner.setSelected(false);  // must.
         spinner.setSelection(mSelectedCategory.ordinal(),true);  //must
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //TODO : is there a way to restart the module that will now have a bundle with different data ?
-                getSupportLoaderManager().destroyLoader(LOADER_UNIQUE_ID);
-                populateUI(SortCategories.values()[position]);
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        spinner.setOnItemSelectedListener(this);
         return true;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        //TODO : is there a way to restart the module that will now have a bundle with different data ?
+        getSupportLoaderManager().destroyLoader(LOADER_UNIQUE_ID);
+        populateUI(SortCategories.values()[position]);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
     @Override
