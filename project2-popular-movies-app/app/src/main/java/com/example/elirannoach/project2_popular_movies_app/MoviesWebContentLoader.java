@@ -6,30 +6,32 @@ import android.content.Context;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MoviesWebContentLoader extends AsyncTaskLoader<List<Movie>> {
-    URL mUrl;
+    List<URL> mUrlList;
     Context mContext;
     List<Movie> mMovieslist;
 
-    public MoviesWebContentLoader(Context context, URL mUrl) {
+    public MoviesWebContentLoader(Context context, URL url) {
         super(context);
-        this.mUrl = mUrl;
+        this.mUrlList = new ArrayList<URL>();
+        this.mUrlList.add(url);
+        this.mContext = context;
+    }
+
+    public MoviesWebContentLoader(Context context, List<URL> urlList) {
+        super(context);
+        this.mUrlList = urlList;
         this.mContext = context;
     }
 
     public MoviesWebContentLoader(Context context) {
         super(context);
         this.mContext = context;
-        try {
-            this.mUrl = new URL("");
-        }
-        catch (MalformedURLException e){
-            e.printStackTrace();
-        }
+        this.mUrlList = new ArrayList<URL>();
     }
 
     @Override
@@ -45,15 +47,17 @@ public class MoviesWebContentLoader extends AsyncTaskLoader<List<Movie>> {
     @Override
     public List<Movie> loadInBackground() {
         String moviesJsonString = "";
-        List<Movie> list;
-        try {
-            NetworkUtils networkUtils = new NetworkUtils(mContext);
-            moviesJsonString = networkUtils.makeHttpRequest(mUrl);
+        List<Movie> list = new ArrayList<>();
+        for (URL url : mUrlList) {
+            try {
+                NetworkUtils networkUtils = new NetworkUtils(mContext);
+                moviesJsonString = networkUtils.makeHttpRequest(url);
+                list.addAll(processJsonMsg(moviesJsonString));
+            } catch (IOException e) {
+                return null;
+            }
         }
-        catch (IOException e){
-            return null;
-        }
-        return processJsonMsg(moviesJsonString);
+        return list;
     }
 
     @Override
@@ -71,7 +75,7 @@ public class MoviesWebContentLoader extends AsyncTaskLoader<List<Movie>> {
     protected List<Movie> processJsonMsg(String moviesJsonString) {
         try{
             if (moviesJsonString !=null && !moviesJsonString.equals("")) {
-                JsonMovieParser MovieParser = new JsonMovieParser(moviesJsonString);
+                JsonMovieListParser MovieParser = new JsonMovieListParser(moviesJsonString);
                 List<Movie> movieList = MovieParser.parse();
                 return movieList;
             }

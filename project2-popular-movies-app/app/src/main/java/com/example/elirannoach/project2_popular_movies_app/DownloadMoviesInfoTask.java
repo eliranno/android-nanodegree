@@ -1,6 +1,5 @@
 package com.example.elirannoach.project2_popular_movies_app;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.os.AsyncTask;
 
@@ -42,7 +41,7 @@ public class DownloadMoviesInfoTask extends AsyncTask<URL,Void,String> {
     protected void onPostExecute(String moviesJsonString) {
         try{
             if (moviesJsonString !=null && !moviesJsonString.equals("") && mRequestFlag) {
-                JsonMovieParser MovieParser = new JsonMovieParser(moviesJsonString);
+                JsonMovieListParser MovieParser = new JsonMovieListParser(moviesJsonString);
                 List<Movie> movieList = MovieParser.parse();
                 mMovieListReceiver.handleData(movieList);
             }

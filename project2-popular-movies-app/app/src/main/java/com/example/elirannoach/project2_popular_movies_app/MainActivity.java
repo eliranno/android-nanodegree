@@ -30,8 +30,11 @@ import android.widget.Toast;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
+import com.example.elirannoach.project2_popular_movies_app.Data.FavoriteMoviesContract;
+
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -43,13 +46,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Toast mToast;
     RecyclerView mRecycleView;
     NetworkUtils mNetworkUtils;
-    private static final int LOADER_UNIQUE_ID = 1;
-    private Loader<List<Movie>> mMoviesWebContentLoader;
+    private static final int WEB_CONTENT_LOADER_UNIQUE_ID = 1;
+    private static final int  MOVIE_DB_CURSOR_LOADER_UNIQUE_ID= 2;
     private MovieListRecycleViewAdapter mViewAdapter;
     private SortCategories mSelectedCategory;
     private static final int COLUMNS_NUM = 4;
     private LoaderManager.LoaderCallbacks<List<Movie>> mMoviesWebContentLoaderCallBacks;
     private LoaderManager.LoaderCallbacks<Cursor> mMovieDatabaseLoaderCallBacks;
+    private Loader<List<Movie>> mMoviesWebContentLoader;
+    private Loader<Cursor> mMoviesDatabaseLoader;
 
 
 
@@ -73,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String color = sharedPreferences.getString("prefSetBackGround",getString(0+R.color.lightGray));
         findViewById(R.id.fl_main_activity).setBackgroundColor(Color.parseColor(color));
         mMoviesWebContentLoaderCallBacks = getMoviesWebContentLoaderCallBacksObject();
+        mMovieDatabaseLoaderCallBacks = getMovieDatabaseLoaderCallBacksObject();
         populateUI(mSelectedCategory);
 
 
@@ -96,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         //TODO : is there a way to restart the module that will now have a bundle with different data ?
-        getSupportLoaderManager().destroyLoader(LOADER_UNIQUE_ID);
+        getSupportLoaderManager().destroyLoader(WEB_CONTENT_LOADER_UNIQUE_ID);
         populateUI(SortCategories.values()[position]);
     }
 
@@ -128,22 +134,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void populateUI(SortCategories category) {
         Map<String, String> queryMap = new Hashtable<>();
         queryMap.put(NetworkUtils.QUERY_KEY_TAG, NetworkUtils.KEY_VALUE);
-        Uri uri;
+        Bundle bundle = new Bundle();
+        UriList uriList = new UriList();
         switch (category) {
             case POPULAR:
-                uri = mNetworkUtils.buildMovieUri(NetworkUtils.PATH_POPULAR_MOVIE, queryMap);
+                uriList.add(mNetworkUtils.buildMovieUri(NetworkUtils.PATH_POPULAR_MOVIE, queryMap));
+                bundle.putParcelable("uri", uriList);
+                mMoviesWebContentLoader = getSupportLoaderManager().initLoader(WEB_CONTENT_LOADER_UNIQUE_ID, bundle, mMoviesWebContentLoaderCallBacks);
                 break;
             case TOP_RATED:
-                uri = mNetworkUtils.buildMovieUri(NetworkUtils.PATH_TOP_RATED, queryMap);
+                uriList.add(mNetworkUtils.buildMovieUri(NetworkUtils.PATH_TOP_RATED, queryMap));
+                bundle.putParcelable("uri", uriList);
+                mMoviesWebContentLoader = getSupportLoaderManager().initLoader(WEB_CONTENT_LOADER_UNIQUE_ID, bundle, mMoviesWebContentLoaderCallBacks);
+                break;
+            case FAVORITE:
+                Uri uri = (FavoriteMoviesContract.FavoriteMovieTable.BASE_CONTENT_URI);
+                bundle.putString("uri", uri.toString());
+                mMoviesDatabaseLoader = getSupportLoaderManager().initLoader(MOVIE_DB_CURSOR_LOADER_UNIQUE_ID,bundle,mMovieDatabaseLoaderCallBacks);
                 break;
             default:
-                uri = mNetworkUtils.buildMovieUri(NetworkUtils.PATH_POPULAR_MOVIE, queryMap);
-                break;
+            uriList.add(mNetworkUtils.buildMovieUri(NetworkUtils.PATH_POPULAR_MOVIE, queryMap));
+            bundle.putParcelable("uri", uriList);
+            mMoviesWebContentLoader = getSupportLoaderManager().initLoader(WEB_CONTENT_LOADER_UNIQUE_ID, bundle, mMoviesWebContentLoaderCallBacks);
         }
-        Bundle bundle = new Bundle();
-        bundle.putString("uri_string", uri.toString());
+
         mSelectedCategory = category;
-        mMoviesWebContentLoader = getSupportLoaderManager().initLoader(LOADER_UNIQUE_ID, bundle, mMoviesWebContentLoaderCallBacks);
     }
 
     @Override
@@ -162,8 +177,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public Loader onCreateLoader(int id, @Nullable Bundle args) {
                 try {
-                    URL url = new URL(args.getString("uri_string"));
-                    return new MoviesWebContentLoader(getApplicationContext(), url);
+                    UriList uriList = (UriList) args.get("uri");
+                    return new MoviesWebContentLoader(getApplicationContext(), uriList.convertToUrlList());
                 } catch (MalformedURLException e) {
                     Log.e("MAIN_ACTIVITY", "no url was set");
                     return new MoviesWebContentLoader(getApplicationContext());
@@ -184,16 +199,30 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-    private LoaderManager.LoaderCallbacks<Cursor> getmMovieDatabaseLoaderCallBacksObject(){
+    private LoaderManager.LoaderCallbacks<Cursor> getMovieDatabaseLoaderCallBacksObject(){
         return new LoaderManager.LoaderCallbacks<Cursor>() {
             @NonNull
             @Override
             public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-                return new MyFavoriteMoviesCursorLoader(getApplicationContext());
+                Uri uri = Uri.parse(args.getString("uri"));
+                return new MyFavoriteMoviesCursorLoader(getApplicationContext(),uri,null,null,null,null);
             }
 
             @Override
             public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+                UriList uriList =new UriList();
+                final Uri QUERY_BY_MOVIE_ID_BASE_URI = Uri.parse("http://api.themoviedb.org/3/movie/");
+                while(data.moveToNext()){
+                    int movieId = data.getInt(data.getColumnIndex(FavoriteMoviesContract.FavoriteMovieTable.MOVIE_ID));
+                    uriList.add(QUERY_BY_MOVIE_ID_BASE_URI.buildUpon().appendPath(String.valueOf(movieId)).
+                            appendQueryParameter(NetworkUtils.QUERY_KEY_TAG, NetworkUtils.KEY_VALUE).build());
+                }
+                if(uriList.size()>0){
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList("uri",uriList);
+                    getSupportLoaderManager().destroyLoader(WEB_CONTENT_LOADER_UNIQUE_ID);
+                    mMoviesWebContentLoader = getSupportLoaderManager().initLoader(WEB_CONTENT_LOADER_UNIQUE_ID,bundle,mMoviesWebContentLoaderCallBacks);
+                }
 
             }
 

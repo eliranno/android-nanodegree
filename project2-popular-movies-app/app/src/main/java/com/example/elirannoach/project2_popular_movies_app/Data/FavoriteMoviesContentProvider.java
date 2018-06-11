@@ -39,7 +39,22 @@ public class FavoriteMoviesContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        return null;
+        final SQLiteDatabase db = mMovieDataBaseHelper.getReadableDatabase();
+        Cursor cursor = null;
+        switch (sUriMatcher.match(uri)){
+            case FAVORITE:
+                cursor = db.query(FavoriteMoviesContract.FavoriteMovieTable.TABLE_NAME,
+                        null,null,
+                        null,null,
+                        null, null);
+                break;
+            case FAVORITE_WITH_ID:
+                break;
+                default:
+                    //throw new UnsupportedOperationException("bad query");
+        }
+        getContext().getContentResolver().notifyChange(uri,null);
+        return cursor;
     }
 
     @Nullable
