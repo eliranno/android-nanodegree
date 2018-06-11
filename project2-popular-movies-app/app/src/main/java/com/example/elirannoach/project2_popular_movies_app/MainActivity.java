@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    //TODO: refactor this to be in a separate class
+    //TODO: refactor all the LoaderCallBack classes separate files
 
     private LoaderManager.LoaderCallbacks<List<Movie>> getMoviesWebContentLoaderCallBacksObject(){
         return new LoaderManager.LoaderCallbacks<List<Movie>>() {
@@ -220,7 +220,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if(uriList.size()>0){
                     Bundle bundle = new Bundle();
                     bundle.putParcelableArrayList("uri",uriList);
-                    getSupportLoaderManager().destroyLoader(WEB_CONTENT_LOADER_UNIQUE_ID);
                     mMoviesWebContentLoader = getSupportLoaderManager().initLoader(WEB_CONTENT_LOADER_UNIQUE_ID,bundle,mMoviesWebContentLoaderCallBacks);
                 }
 
