@@ -1,10 +1,15 @@
 package com.example.elirannoach.project2_popular_movies_app;
 
 
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.content.AsyncTaskLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
@@ -33,7 +38,7 @@ import java.util.Map;
 
 import static android.support.v7.widget.RecyclerView.*;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Movie>>, AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     Toast mToast;
     RecyclerView mRecycleView;
@@ -43,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private MovieListRecycleViewAdapter mViewAdapter;
     private SortCategories mSelectedCategory;
     private static final int COLUMNS_NUM = 4;
+    private LoaderManager.LoaderCallbacks<List<Movie>> mMoviesWebContentLoaderCallBacks;
+    private LoaderManager.LoaderCallbacks<Cursor> mMovieDatabaseLoaderCallBacks;
+
 
 
     public enum SortCategories{
@@ -64,7 +72,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String color = sharedPreferences.getString("prefSetBackGround",getString(0+R.color.lightGray));
         findViewById(R.id.fl_main_activity).setBackgroundColor(Color.parseColor(color));
+        mMoviesWebContentLoaderCallBacks = getMoviesWebContentLoaderCallBacksObject();
         populateUI(mSelectedCategory);
+
 
     }
 
@@ -133,30 +143,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Bundle bundle = new Bundle();
         bundle.putString("uri_string", uri.toString());
         mSelectedCategory = category;
-        mMoviesWebContentLoader = getSupportLoaderManager().initLoader(LOADER_UNIQUE_ID, bundle, this);
-    }
-
-    @Override
-    public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
-            try {
-                URL url = new URL(args.getString("uri_string"));
-                return new MoviesWebContentLoader(this, url);
-            } catch (MalformedURLException e) {
-                Log.e("MAIN_ACTIVITY", "no url was set");
-                return new MoviesWebContentLoader(this);
-            }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
-        mViewAdapter = new MovieListRecycleViewAdapter(this,data);
-        mRecycleView.setAdapter(mViewAdapter);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Movie>> loader) {
-
-
+        mMoviesWebContentLoader = getSupportLoaderManager().initLoader(LOADER_UNIQUE_ID, bundle, mMoviesWebContentLoaderCallBacks);
     }
 
     @Override
@@ -165,6 +152,56 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         outState.putString("category",mSelectedCategory.name());
         super.onSaveInstanceState(outState);
 
+    }
+
+    //TODO: refactor this to be in a separate class
+
+    private LoaderManager.LoaderCallbacks<List<Movie>> getMoviesWebContentLoaderCallBacksObject(){
+        return new LoaderManager.LoaderCallbacks<List<Movie>>() {
+            @NonNull
+            @Override
+            public Loader onCreateLoader(int id, @Nullable Bundle args) {
+                try {
+                    URL url = new URL(args.getString("uri_string"));
+                    return new MoviesWebContentLoader(getApplicationContext(), url);
+                } catch (MalformedURLException e) {
+                    Log.e("MAIN_ACTIVITY", "no url was set");
+                    return new MoviesWebContentLoader(getApplicationContext());
+                }
+            }
+
+            @Override
+            public void onLoadFinished(@NonNull Loader<List<Movie>> loader, List<Movie> data) {
+                mViewAdapter = new MovieListRecycleViewAdapter(getApplicationContext(),data);
+                mRecycleView.setAdapter(mViewAdapter);
+            }
+
+            @Override
+            public void onLoaderReset(@NonNull Loader loader) {
+
+            }
+        };
+    }
+
+
+    private LoaderManager.LoaderCallbacks<Cursor> getmMovieDatabaseLoaderCallBacksObject{
+        return new LoaderManager.LoaderCallbacks<Cursor>() {
+            @NonNull
+            @Override
+            public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+                return new MyFavoriteMoviesCursorLoader(getApplicationContext());
+            }
+
+            @Override
+            public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+
+            }
+
+            @Override
+            public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+
+            }
+        };
     }
 
     //TODO: use mToast to display error messages
