@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-    private LoaderManager.LoaderCallbacks<Cursor> getmMovieDatabaseLoaderCallBacksObject{
+    private LoaderManager.LoaderCallbacks<Cursor> getmMovieDatabaseLoaderCallBacksObject(){
         return new LoaderManager.LoaderCallbacks<Cursor>() {
             @NonNull
             @Override
