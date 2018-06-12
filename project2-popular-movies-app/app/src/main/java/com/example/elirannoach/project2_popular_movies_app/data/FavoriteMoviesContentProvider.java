@@ -1,4 +1,4 @@
-package com.example.elirannoach.project2_popular_movies_app.Data;
+package com.example.elirannoach.project2_popular_movies_app.data;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -11,8 +11,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import static com.example.elirannoach.project2_popular_movies_app.Data.FavoriteMoviesContract.FavoriteMovieTable.BASE_CONTENT_URI;
-import static com.example.elirannoach.project2_popular_movies_app.Data.FavoriteMoviesContract.FavoriteMovieTable.TABLE_NAME;
+import static com.example.elirannoach.project2_popular_movies_app.data.FavoriteMoviesContract.FavoriteMovieTable.BASE_CONTENT_URI;
 
 
 public class FavoriteMoviesContentProvider extends ContentProvider {

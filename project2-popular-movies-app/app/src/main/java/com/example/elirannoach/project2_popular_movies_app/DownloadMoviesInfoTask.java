@@ -3,6 +3,10 @@ package com.example.elirannoach.project2_popular_movies_app;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.example.elirannoach.project2_popular_movies_app.data.Movie;
+import com.example.elirannoach.project2_popular_movies_app.utilities.JsonMovieListParser;
+import com.example.elirannoach.project2_popular_movies_app.utilities.NetworkUtils;
+
 import org.json.JSONException;
 
 import java.io.IOException;

@@ -12,12 +12,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.elirannoach.project2_popular_movies_app.Data.FavoriteMoviesContract;
+import com.example.elirannoach.project2_popular_movies_app.data.FavoriteMoviesContract;
+import com.example.elirannoach.project2_popular_movies_app.data.Movie;
+import com.example.elirannoach.project2_popular_movies_app.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 public class MovieInfoActivity extends AppCompatActivity {
 

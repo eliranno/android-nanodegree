@@ -1,13 +1,13 @@
-package com.example.elirannoach.project2_popular_movies_app;
+package com.example.elirannoach.project2_popular_movies_app.data;
+
+import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 public class UriList extends ArrayList<Uri> implements Parcelable {
     protected UriList(Parcel in) {

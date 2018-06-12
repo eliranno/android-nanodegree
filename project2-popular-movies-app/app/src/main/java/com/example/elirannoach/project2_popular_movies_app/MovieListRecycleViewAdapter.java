@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.elirannoach.project2_popular_movies_app.data.Movie;
+import com.example.elirannoach.project2_popular_movies_app.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

@@ -5,10 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.CursorLoader;
-
-import com.example.elirannoach.project2_popular_movies_app.Data.FavoriteMoviesContract;
 
 public class MyFavoriteMoviesCursorLoader extends CursorLoader{
 

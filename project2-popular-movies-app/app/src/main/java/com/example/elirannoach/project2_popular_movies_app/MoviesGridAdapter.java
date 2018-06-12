@@ -2,9 +2,7 @@ package com.example.elirannoach.project2_popular_movies_app;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -14,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.elirannoach.project2_popular_movies_app.data.Movie;
+import com.example.elirannoach.project2_popular_movies_app.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

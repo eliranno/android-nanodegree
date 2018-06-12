@@ -1,6 +1,6 @@
-package com.example.elirannoach.project2_popular_movies_app;
+package com.example.elirannoach.project2_popular_movies_app.utilities;
 
-import android.icu.text.ListFormatter;
+import com.example.elirannoach.project2_popular_movies_app.data.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;

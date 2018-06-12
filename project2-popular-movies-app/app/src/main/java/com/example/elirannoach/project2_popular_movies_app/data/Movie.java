@@ -1,9 +1,8 @@
-package com.example.elirannoach.project2_popular_movies_app;
+package com.example.elirannoach.project2_popular_movies_app.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,11 +24,12 @@ public class Movie implements Parcelable {
     private boolean mIsAdult;
     private String mOverview;
     private String mReleaseDate;
+    private List<MovieTrailerLink> mTrailerList;
 
     public Movie(int id, int voteCount, boolean isVideo,double averageVote,String title,
                  double popularity,String posterPath,String originalLanguage,String originalTitle,
-                 Map<Integer,Integer> genereIdMap,String mBackdropPath,boolean isAdult,String overview,
-                 String releaseDate){
+                 Map<Integer,Integer> genereIdMap,String backdropPath,boolean isAdult,String overview,
+                 String releaseDate,List<MovieTrailerLink> trailerList){
         mId = id;
         mVoteCount = voteCount;
         mIsAdult = isVideo;
@@ -39,10 +39,11 @@ public class Movie implements Parcelable {
         mPosterPath = posterPath;
         mOriginalLang = originalLanguage;
         mGenreIdMap = genereIdMap;
-        mBackdropPath = mBackdropPath;
+        mBackdropPath = backdropPath;
         mIsAdult = isAdult;
         mOverview = overview;
         mReleaseDate = releaseDate;
+        mTrailerList = trailerList;
     }
 
     public Movie(Parcel in){
@@ -72,6 +73,11 @@ public class Movie implements Parcelable {
 
     public int getMovieId() {return mId;}
 
+    // TODO : finish this method
+    public MovieBuilder buildUpon(){
+        return null;
+    }
+
     //Note that order of variable writing and reading is important, you should read and write variable in same order.
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -97,7 +103,6 @@ public class Movie implements Parcelable {
     };
 
     public static class MovieBuilder{
-
         private int mId = -1;
         private int mVoteCount = 0;
         private boolean mIsVideo = false;
@@ -112,9 +117,28 @@ public class Movie implements Parcelable {
         private boolean mIsAdult = false;
         private String mOverview = "";
         private String mReleaseDate = "";
+        private List<MovieTrailerLink> mTrailersList = new ArrayList<>();
 
 
-        public MovieBuilder(){
+        private MovieBuilder(int mId, int mVoteCount, boolean mIsVideo, double mAverageVote, String mTitle, double mPopularity, String mPosterPath, String mOriginalLang, String mOriginalTitle, Map<Integer, Integer> mGenreIdMap, String mBackdropPath, boolean mIsAdult, String mOverview, String mReleaseDate, List<MovieTrailerLink> mTrailersList) {
+            this.mId = mId;
+            this.mVoteCount = mVoteCount;
+            this.mIsVideo = mIsVideo;
+            this.mAverageVote = mAverageVote;
+            this.mTitle = mTitle;
+            this.mPopularity = mPopularity;
+            this.mPosterPath = mPosterPath;
+            this.mOriginalLang = mOriginalLang;
+            this.mOriginalTitle = mOriginalTitle;
+            this.mGenreIdMap = mGenreIdMap;
+            this.mBackdropPath = mBackdropPath;
+            this.mIsAdult = mIsAdult;
+            this.mOverview = mOverview;
+            this.mReleaseDate = mReleaseDate;
+            this.mTrailersList = mTrailersList;
+        }
+
+        public MovieBuilder (){
 
         }
 
@@ -188,10 +212,20 @@ public class Movie implements Parcelable {
             return this;
         }
 
+        public MovieBuilder setTrailerList(List<MovieTrailerLink> list){
+            mTrailersList = list;
+            return this;
+        }
+
+        public MovieBuilder addLinkToTrailerList(MovieTrailerLink link){
+            mTrailersList.add(link);
+            return this;
+        }
+
         public Movie build(){
             return new Movie(mId,mVoteCount,mIsVideo,mAverageVote,mTitle,mPopularity,
                     mPosterPath,mOriginalLang,mOriginalTitle,mGenreIdMap,mBackdropPath,mIsAdult,
-                    mOverview,mReleaseDate);
+                    mOverview,mReleaseDate,mTrailersList);
         }
 
 

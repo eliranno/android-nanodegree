@@ -23,7 +23,7 @@
         <activity android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity"/>
 
-        <provider android:name="com.example.elirannoach.project2_popular_movies_app.Data.FavoriteMoviesContentProvider"
+        <provider android:name="com.example.elirannoach.project2_popular_movies_app.data.FavoriteMoviesContentProvider"
             android:authorities="com.elirannoach.popular_movies_app">
         </provider>
 

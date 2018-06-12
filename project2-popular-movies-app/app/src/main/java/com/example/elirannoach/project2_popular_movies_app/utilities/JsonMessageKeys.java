@@ -1,4 +1,4 @@
-package com.example.elirannoach.project2_popular_movies_app;
+package com.example.elirannoach.project2_popular_movies_app.utilities;
 
 public class JsonMessageKeys {
 

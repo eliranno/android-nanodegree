@@ -1,4 +1,4 @@
-package com.example.elirannoach.project2_popular_movies_app.Data;
+package com.example.elirannoach.project2_popular_movies_app.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

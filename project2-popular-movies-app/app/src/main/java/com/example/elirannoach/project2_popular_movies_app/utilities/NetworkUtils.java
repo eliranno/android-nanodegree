@@ -1,4 +1,4 @@
-package com.example.elirannoach.project2_popular_movies_app;
+package com.example.elirannoach.project2_popular_movies_app.utilities;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -16,18 +16,17 @@ import java.util.Scanner;
 
 public class NetworkUtils {
 
-    static final String IMAGE_SIZE_BIG = "/w185";
-    static final String SCHEME = "http";
-    static final String ATHORITY_MOVIE = "api.themoviedb.org";
-    static final String AUTHORITY_IMAGE = "image.tmdb.org";
-    static final String PATH_POPULAR_MOVIE = "/3/movie/popular";
-    static final String PATH_TOP_RATED = "/3/movie/top_rated";
-    static final String PATH_IMAGE = "/t/p";
-    static final String IMAGE_SIZE_SMALL = "/w154";
-    static final String QUERY_KEY_TAG = "api_key";
-    static final String TAG = "NetworkUtils";
-    static final String KEY_VALUE  = "0d3fecc6c9418d69e5d5541e5f4d7d33";  //TODO : remove this from here
-
+    public static final String QUERY_KEY_TAG = "api_key";
+    public static final String TAG = "NetworkUtils";
+    public static final String KEY_VALUE  = "0d3fecc6c9418d69e5d5541e5f4d7d33";  //TODO : remove this from here
+    public static final String IMAGE_SIZE_BIG = "/w185";
+    public static final String SCHEME = "http";
+    public static final String ATHORITY_MOVIE = "api.themoviedb.org";
+    public static final String AUTHORITY_IMAGE = "image.tmdb.org";
+    public static final String PATH_POPULAR_MOVIE = "/3/movie/popular";
+    public static final String PATH_TOP_RATED = "/3/movie/top_rated";
+    public static final String PATH_IMAGE = "/t/p";
+    public static final String IMAGE_SIZE_SMALL = "/w154";
     private Context mContext;
 
     public NetworkUtils(Context context){
@@ -42,7 +41,7 @@ public class NetworkUtils {
      *@return new Uri object that contains an end-point
      */
 
-    Uri buildMovieUri(String path, Map<String,String> queryMap){
+    public Uri buildMovieUri(String path, Map<String,String> queryMap){
         Uri.Builder uriBuilder = new Uri.Builder();
         uriBuilder.scheme(SCHEME);
         uriBuilder.authority(ATHORITY_MOVIE);
