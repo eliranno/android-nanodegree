@@ -49,6 +49,12 @@ public class FavoriteMoviesContentProvider extends ContentProvider {
                         null, null);
                 break;
             case FAVORITE_WITH_ID:
+                String movieId = uri.getLastPathSegment();
+                String queryArg = FavoriteMoviesContract.FavoriteMovieTable.MOVIE_ID + "=?";
+                cursor = db.query(FavoriteMoviesContract.FavoriteMovieTable.TABLE_NAME,
+                        null,queryArg,
+                        new String[]{movieId},null,
+                        null, null);
                 break;
                 default:
                     //throw new UnsupportedOperationException("bad query");
@@ -88,7 +94,18 @@ public class FavoriteMoviesContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase db = mMovieDataBaseHelper.getWritableDatabase();
+        int retVal = 0;
+        switch(sUriMatcher.match(uri)){
+            case FAVORITE:
+                break;
+            case FAVORITE_WITH_ID:
+                String movieId = uri.getLastPathSegment();
+                String queryArg = FavoriteMoviesContract.FavoriteMovieTable.MOVIE_ID + "=?";
+                retVal = db.delete(FavoriteMoviesContract.FavoriteMovieTable.TABLE_NAME,queryArg,new String[]{movieId});
+                break;
+        }
+        return retVal;
     }
 
     @Override
