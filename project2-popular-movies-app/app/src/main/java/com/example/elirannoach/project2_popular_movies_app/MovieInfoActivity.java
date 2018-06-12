@@ -9,14 +9,20 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.elirannoach.project2_popular_movies_app.data.FavoriteMoviesContract;
 import com.example.elirannoach.project2_popular_movies_app.data.Movie;
+import com.example.elirannoach.project2_popular_movies_app.data.MovieTrailerLink;
 import com.example.elirannoach.project2_popular_movies_app.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MovieInfoActivity extends AppCompatActivity {
 
@@ -25,6 +31,7 @@ public class MovieInfoActivity extends AppCompatActivity {
     private  ImageView mFavoriteImage;
     private ContentResolver mContentResolver;
     private Movie mMovie;
+    private RecyclerView mTrailersRecycleView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,8 +40,10 @@ public class MovieInfoActivity extends AppCompatActivity {
         mMovieInfoTextMovie = findViewById(R.id.tv_movie_info);
         mMovieImage = findViewById(R.id.iv_movie_info_poster);
         mFavoriteImage = findViewById(R.id.iv_favorite);
+        mTrailersRecycleView = findViewById(R.id.rv_movie_trailer_list);
         mMovie = getIntent().getExtras().getParcelable("movieObj");
         Picasso.with(this).load(getImageUri(mMovie)).into(mMovieImage);
+        initRecycleViews();
         if(isFavoriteMovie())
             Picasso.with(this).load(R.drawable.like_star).into(mFavoriteImage);
         else
@@ -65,7 +74,7 @@ public class MovieInfoActivity extends AppCompatActivity {
 
     public String createMovieInfoText(Movie movie){
         return String.format("Movie Title: %s\r\n\n Release Date: %s\r\n\n" +
-                "Overview: %s \r\n\n Average Vote: %.2f \r\n\n",movie.getTitle(),
+                "Overview: %s \r\n\n Average Vote: %.2f \r",movie.getTitle(),
                 movie.getReleaseDate(),movie.getOverview(),movie.getAverageVote());
     }
 
@@ -92,5 +101,18 @@ public class MovieInfoActivity extends AppCompatActivity {
         String movieIdPath = String.valueOf(mMovie.getMovieId());
         Uri contentUri = FavoriteMoviesContract.FavoriteMovieTable.BASE_CONTENT_URI.buildUpon().appendPath(movieIdPath).build();
         return getContentResolver().delete(contentUri,null,null);
+    }
+
+    private void initRecycleViews(){
+        List<MovieTrailerLink> demoList  = new ArrayList<>();
+        demoList.add(new MovieTrailerLink());
+        demoList.add(new MovieTrailerLink());
+        demoList.add(new MovieTrailerLink());
+        demoList.add(new MovieTrailerLink());
+        demoList.add(new MovieTrailerLink());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        MovieTrailerRecycleViewAdapter adapter = new MovieTrailerRecycleViewAdapter(this,demoList);
+        mTrailersRecycleView.setLayoutManager(layoutManager);
+        mTrailersRecycleView.setAdapter(adapter);
     }
 }

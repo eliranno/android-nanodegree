@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/movie_trailer_view_id"
+    android:paddingLeft="20dp"
+    android:background="@drawable/border"
+    android:layout_marginTop="10dp">
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/iv_trailer_play_icon"
+        android:adjustViewBounds="true"
+        android:maxWidth="40dp"
+        android:maxHeight="40dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:layout_gravity="center"
+        android:src="@mipmap/red_play_icon"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_movie_trailer_name"
+        android:textSize="15sp"
+        android:layout_gravity="center"
+        android:paddingLeft="30dp"
+        android:textStyle="italic|bold"
+        android:textColor="@color/black"
+        android:text="Trailer#"/>
+
+</LinearLayout>
