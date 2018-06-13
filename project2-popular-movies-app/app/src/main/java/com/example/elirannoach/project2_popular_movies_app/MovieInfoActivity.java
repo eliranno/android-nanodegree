@@ -1,16 +1,16 @@
 package com.example.elirannoach.project2_popular_movies_app;
 
-import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.support.annotation.NonNull;
-import android.support.v4.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,10 +24,17 @@ import com.example.elirannoach.project2_popular_movies_app.data.MovieTrailerLink
 import com.example.elirannoach.project2_popular_movies_app.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.elirannoach.project2_popular_movies_app.utilities.NetworkUtils.ATHORITY_MOVIE;
 import static com.example.elirannoach.project2_popular_movies_app.utilities.NetworkUtils.KEY_VALUE;
@@ -44,15 +51,19 @@ public class MovieInfoActivity extends AppCompatActivity implements
     private Movie mMovie;
     private RecyclerView mTrailersRecycleView;
     private static final int MOVIE_VIDEO_LIST_LOADER_ID = 15;
+    private HashMap<String,String> mReviewsMap;
+    private TextView mMovieReviewsTextView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_info_activity);
+        mReviewsMap = new HashMap<>();
         mMovieInfoTextMovie = findViewById(R.id.tv_movie_info);
         mMovieImage = findViewById(R.id.iv_movie_info_poster);
         mFavoriteImage = findViewById(R.id.iv_favorite);
         mTrailersRecycleView = findViewById(R.id.rv_movie_trailer_list);
+        mMovieReviewsTextView = findViewById(R.id.tv_movie_reviews);
         mMovie = getIntent().getExtras().getParcelable("movieObj");
         Picasso.with(this).load(getImageUri(mMovie)).into(mMovieImage);
         String infoText = createMovieInfoText(mMovie);
@@ -60,7 +71,7 @@ public class MovieInfoActivity extends AppCompatActivity implements
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         setupFavoriteButton();
         getSupportLoaderManager().initLoader(MOVIE_VIDEO_LIST_LOADER_ID, null, this);
-
+        fetchMovieReviews();
     }
 
     public String createMovieInfoText(Movie movie) {
@@ -154,5 +165,48 @@ public class MovieInfoActivity extends AppCompatActivity implements
     @Override
     public void onLoaderReset(@NonNull Loader<List<MovieTrailerLink>> loader) {
 
+    }
+
+    private void fetchMovieReviews(){
+        AsyncTask<Void,Void,Void> reviewTask = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... urls) {
+                try {
+                    Uri.Builder uriBuilder = new Uri.Builder();
+                    Uri uri = uriBuilder.scheme(SCHEME).authority(ATHORITY_MOVIE).
+                            path("3/movie/" + mMovie.getMovieId() + "/reviews").
+                            appendQueryParameter(QUERY_KEY_TAG, KEY_VALUE).build();
+                    URL url = new URL(uri.toString());
+                    NetworkUtils networkUtil = new NetworkUtils(getApplicationContext());
+                    String dataString = networkUtil.makeHttpRequest(url);
+                    JSONObject jsonObject = new JSONObject(dataString);
+                    JSONArray resultArray = jsonObject.optJSONArray("results");
+                    int size = resultArray.length();
+                    StringBuilder reviewsStringBuilder = new StringBuilder();
+                    for(int i=0;i<size;i++){
+                        JSONObject review = (JSONObject)resultArray.get(i);
+                        mReviewsMap.put(review.getString("author"),review.getString("content"));
+                    }
+
+
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                StringBuilder stringBuilder = new StringBuilder();
+                for (Map.Entry<String,String> review : mReviewsMap.entrySet()){
+                    stringBuilder.append("Author: " + review.getKey()+ "\r\n"+
+                            review.getValue()+"\r\n\n");
+                }
+                mMovieReviewsTextView.setText(stringBuilder);
+
+            }
+        };
+        reviewTask.execute();
     }
 }

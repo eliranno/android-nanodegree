@@ -3,7 +3,6 @@ package com.example.elirannoach.project2_popular_movies_app.utilities;
 import com.example.elirannoach.project2_popular_movies_app.data.MovieTrailerLink;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONException;

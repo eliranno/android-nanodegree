@@ -13,37 +13,47 @@
             android:layout_margin="16dp"
             android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="230dp"
-                android:layout_height="320dp"
-                android:id="@+id/iv_movie_info_poster"
-                android:layout_gravity="center"
-                android:layout_marginBottom="20dp"
-                android:scaleType="fitXY"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp">
 
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:id="@+id/iv_favorite"
-                android:layout_marginBottom="20dp"
-                android:layout_gravity="left"/>
+                <ImageView
+                    android:id="@+id/iv_favorite"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="left"/>
+
+
+                <ImageView
+                    android:id="@+id/iv_movie_info_poster"
+                    android:layout_width="115dp"
+                    android:layout_height="160dp"
+                    android:layout_centerInParent="true"
+                    android:scaleType="fitXY" />
+
+            </RelativeLayout>
 
             <TextView
+                android:id="@+id/tv_movie_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:id="@+id/tv_movie_info"/>
+                android:layout_gravity="left" />
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_movie_trailer_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/rv_movie_trailer_list">
+                android:layout_height="wrap_content">
 
             </android.support.v7.widget.RecyclerView>
 
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_movie_reviews"/>
 
         </LinearLayout>
-
 
 
     </ScrollView>
