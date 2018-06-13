@@ -23,7 +23,7 @@ public class MovieTrailerParser {
             JSONArray jsonArray = jsonObject.optJSONArray("results");
             int size = jsonArray.length();
             for(int i=0;i<size;i++){
-                MovieTrailerLink movieTrailerLink = gsonBuilder.fromJson((JsonElement) jsonArray.get(i),MovieTrailerLink.class);
+                MovieTrailerLink movieTrailerLink = gsonBuilder.fromJson(jsonArray.get(i).toString(),MovieTrailerLink.class);
                 trailerList.add(movieTrailerLink);
             }
 

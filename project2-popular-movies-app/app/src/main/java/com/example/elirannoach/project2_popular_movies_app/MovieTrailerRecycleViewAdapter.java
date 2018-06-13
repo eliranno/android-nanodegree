@@ -1,6 +1,8 @@
 package com.example.elirannoach.project2_popular_movies_app;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,8 +33,16 @@ public class MovieTrailerRecycleViewAdapter extends RecyclerView.Adapter<MovieTr
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MovieTrailerLinkViewHolder holder, int position) {
-        holder.trailerText.setText("Trailer "+String.valueOf(position));
+    public void onBindViewHolder(@NonNull MovieTrailerLinkViewHolder holder, final int position) {
+        holder.trailerText.setText("Trailer "+String.valueOf(position+1));
+        holder.playIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String id = movieTrailerLinkList.get(position).getKey();
+                mContent.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v="+id)));
+
+            }
+        });
     }
 
     @Override
