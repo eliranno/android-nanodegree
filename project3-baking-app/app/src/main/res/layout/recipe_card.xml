@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/recipe_cardview_id"
+    card_view:cardCornerRadius="4dp"
+    android:layout_gravity="center"
+    app:cardBackgroundColor="@color/pink"
+    android:layout_margin="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/recipe_name_textview_id"
+            android:textColor="@color/solid_black"
+            android:textStyle="bold"
+            android:textSize="30sp"/>
+
+</android.support.v7.widget.CardView>
