@@ -10,7 +10,7 @@
         android:id="@+id/video_view"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        app:use_controller="false"
+        app:use_controller="true"
         app:show_timeout="10000"
         app:repeat_toggle_modes="one"
         app:fastforward_increment="30000"
@@ -18,8 +18,19 @@
 
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="testttttttttt"/>
+        android:id="@+id/ingredient_list_id"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        android:textStyle="italic"/>
+
+    <TextView
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/recipe_step_text_id"
+        android:textStyle="bold"/>
+
 
 </LinearLayout>

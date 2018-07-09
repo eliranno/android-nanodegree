@@ -8,8 +8,10 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.elirannoach.bakingapp.R;
+import com.example.elirannoach.bakingapp.data.Ingredient;
 import com.example.elirannoach.bakingapp.data.Recipe;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -39,6 +41,10 @@ public class RecipeInstructionFragment extends Fragment {
     private Recipe mRecipe;
     private int mStepNumber;
     private SimpleExoPlayer mExoPlayer;
+    @BindView(R.id.ingredient_list_id)
+    TextView mRecipeIngredientListTextView;
+    @BindView(R.id.recipe_step_text_id)
+    TextView mRecipeStepTextView;
 
 
     @Override
@@ -50,10 +56,20 @@ public class RecipeInstructionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.recipe_instruction_fragment, container, false);
-        ButterKnife.bind(rootView);
+        ButterKnife.bind(this,rootView);
         Bundle bundle = getArguments();
         mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.video_view);
+        mRecipeIngredientListTextView.setText(getIngredientListString());
+        mRecipeStepTextView.setText(mRecipe.getmRecipleStepList().get(mStepNumber).getmDescription());
         return rootView;
+    }
+
+    private String getIngredientListString() {
+        StringBuilder builder = new StringBuilder();
+        for (Ingredient ingredient : mRecipe.getmIngredientList()){
+            builder.append(ingredient);
+        }
+        return builder.toString();
     }
 
     @Override

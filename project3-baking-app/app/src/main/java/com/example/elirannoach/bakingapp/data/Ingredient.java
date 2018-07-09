@@ -43,4 +43,9 @@ public class Ingredient implements Parcelable
         dest.writeString(mMeasure);
         dest.writeString(mIngredient);
     }
+
+    @Override
+    public String toString() {
+        return this.mIngredient + " - " + mQuantity + " " + mMeasure + " \r\n";
+    }
 }
