@@ -1,5 +1,6 @@
 package com.example.elirannoach.bakingapp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
@@ -42,6 +43,8 @@ public class RecipeInstructionActivity extends AppCompatActivity {
                         getFragmentManager().beginTransaction().replace(R.id.recipe_instruction_fragment_container_id,fragment).commit();
                         break;
                     case R.id.action_homes:
+                        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                        startActivity(intent);
                         break;
                     default:
                         return false;
