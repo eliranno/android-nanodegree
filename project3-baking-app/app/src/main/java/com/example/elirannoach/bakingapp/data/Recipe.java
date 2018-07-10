@@ -17,6 +17,10 @@ public class Recipe implements Parcelable {
     private List<Ingredient> mIngredientList;
     @SerializedName("steps")
     private List<RecipeStep> mRecipleStepList;
+    @SerializedName("image")
+    private String mImageSrc;
+    @SerializedName("servings")
+    private int mServingNumber;
 
     public Recipe(int mId, String nName, List<Ingredient> mIngredientList, List<RecipeStep> mRecipleStepList) {
         this.mId = mId;
@@ -75,4 +79,11 @@ public class Recipe implements Parcelable {
         dest.writeTypedList(mRecipleStepList);
     }
 
+    public String getmImageSrc() {
+        return mImageSrc;
+    }
+
+    public int getmServingNumber() {
+        return mServingNumber;
+    }
 }

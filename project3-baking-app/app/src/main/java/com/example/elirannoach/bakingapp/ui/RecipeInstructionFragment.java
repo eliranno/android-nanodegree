@@ -45,6 +45,13 @@ public class RecipeInstructionFragment extends Fragment {
     TextView mRecipeIngredientListTextView;
     @BindView(R.id.recipe_step_text_id)
     TextView mRecipeStepTextView;
+    private long mPlaybackPosition;
+    private int mCurrentWindow;
+
+    public static final String AUTOPLAY = "autoplay";
+    public static final String CURRENT_WINDOW_INDEX = "current_window_index";
+    public static final String PLAYBACK_POSITION = "playback_position";
+    public static final String RECIPE = "recipe";
 
 
     @Override
@@ -57,7 +64,12 @@ public class RecipeInstructionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.recipe_instruction_fragment, container, false);
         ButterKnife.bind(this,rootView);
-        Bundle bundle = getArguments();
+
+        if(savedInstanceState!=null) {
+            mPlaybackPosition = savedInstanceState.getLong(PLAYBACK_POSITION, 0);
+            mCurrentWindow = savedInstanceState.getInt(CURRENT_WINDOW_INDEX, 0);
+            mRecipe = savedInstanceState.getParcelable(RECIPE);
+        }
         mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.video_view);
         mRecipeIngredientListTextView.setText(getIngredientListString());
         mRecipeStepTextView.setText(mRecipe.getmRecipleStepList().get(mStepNumber).getmDescription());
@@ -90,6 +102,7 @@ public class RecipeInstructionFragment extends Fragment {
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
+            mExoPlayer.seekTo(mCurrentWindow, mPlaybackPosition);
             mPlayerView.setPlayer(mExoPlayer);
             // Prepare the MediaSource.
             String userAgent = Util.getUserAgent(getActivity(), "BakingRecipe");
@@ -113,5 +126,15 @@ public class RecipeInstructionFragment extends Fragment {
         mExoPlayer.stop();
         mExoPlayer.release();
         mExoPlayer = null;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mExoPlayer != null) {
+            outState.putParcelable(RECIPE,mRecipe);
+            outState.putLong(PLAYBACK_POSITION, mExoPlayer.getCurrentPosition());
+            outState.putInt(CURRENT_WINDOW_INDEX, mExoPlayer.getCurrentWindowIndex());
+        }
+            super.onSaveInstanceState(outState);
     }
 }
