@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.example.elirannoach.bakingapp.R;
 import com.example.elirannoach.bakingapp.data.Recipe;
 import com.example.elirannoach.bakingapp.ui.RecipeInstructionActivity;
+import com.example.elirannoach.bakingapp.ui.RecipeListFragment;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -24,14 +25,16 @@ import java.util.zip.Inflater;
 public class RecipeListRecycleViewAdapter extends RecyclerView.Adapter<RecipeCardViewHolder> {
     private List<Recipe> mRecipeList;
     private Context mContext;
+    private RecipeListFragment.OnRecipeClickListener mRecipeClickListener;
 
     interface OnSelectedRecipeListener{
         void onRecipeClicked();
     }
 
-    public RecipeListRecycleViewAdapter(List<Recipe> recipeList, Context context){
+    public RecipeListRecycleViewAdapter(List<Recipe> recipeList, Context context, RecipeListFragment.OnRecipeClickListener recipeClickListener){
         mRecipeList = recipeList;
         mContext = context;
+        mRecipeClickListener = recipeClickListener;
     }
 
     @NonNull
@@ -67,9 +70,7 @@ public class RecipeListRecycleViewAdapter extends RecyclerView.Adapter<RecipeCar
         holder.setOnSelectedRecipeListener(new OnSelectedRecipeListener() {
             @Override
             public void onRecipeClicked() {
-                Intent intent = new Intent(mContext, RecipeInstructionActivity.class);
-                intent.putExtra("recipe",mRecipeList.get(position));
-                mContext.startActivity(intent);
+                mRecipeClickListener.onRecipeClicked(mRecipeList.get(position));
             }
         });
     }

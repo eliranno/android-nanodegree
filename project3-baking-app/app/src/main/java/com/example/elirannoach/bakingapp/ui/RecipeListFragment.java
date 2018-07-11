@@ -28,10 +28,21 @@ public class RecipeListFragment extends Fragment implements android.app.LoaderMa
     @BindView(R.id.rv_recipe_list_id)
     RecyclerView mRecipeListRecycleView;
     private static final int RECIPE_LIST_ASYNC_LOADER_ID = 3;
+    private OnRecipeClickListener mOnRecipeClickListerner;
+
+    public interface OnRecipeClickListener{
+        void onRecipeClicked(Recipe recipe);
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        try {
+            mOnRecipeClickListerner = (OnRecipeClickListener) context;
+        }
+        catch (ClassCastException e){
+            e.printStackTrace();
+        }
     }
 
     @Nullable
@@ -56,7 +67,7 @@ public class RecipeListFragment extends Fragment implements android.app.LoaderMa
     public void onLoadFinished(android.content.Loader<List<Recipe>> loader, List<Recipe> data) {
         RecyclerView.LayoutManager llm = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
         mRecipeListRecycleView.setLayoutManager(llm);
-        mRecipeListRecycleView.setAdapter(new RecipeListRecycleViewAdapter(data,getActivity()));
+        mRecipeListRecycleView.setAdapter(new RecipeListRecycleViewAdapter(data,getActivity(),mOnRecipeClickListerner));
     }
 
     @Override
