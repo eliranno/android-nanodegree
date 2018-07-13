@@ -3,4 +3,6 @@
     <string name="previous_step">Previous</string>
     <string name="home">Home</string>
     <string name="next">Next</string>
+    <string name="appwidget_text">RECIPE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

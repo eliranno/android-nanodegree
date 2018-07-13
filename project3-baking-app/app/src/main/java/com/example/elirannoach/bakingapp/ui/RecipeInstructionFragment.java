@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.elirannoach.bakingapp.BakingAppWidget;
 import com.example.elirannoach.bakingapp.R;
 import com.example.elirannoach.bakingapp.data.Ingredient;
 import com.example.elirannoach.bakingapp.data.Recipe;
@@ -73,6 +74,7 @@ public class RecipeInstructionFragment extends Fragment {
         mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.video_view);
         mRecipeIngredientListTextView.setText(getIngredientListString());
         mRecipeStepTextView.setText(mRecipe.getmRecipleStepList().get(mStepNumber).getmDescription());
+        BakingAppWidget.updateRecipeWidget(getContext(),mRecipe);
         return rootView;
     }
 
