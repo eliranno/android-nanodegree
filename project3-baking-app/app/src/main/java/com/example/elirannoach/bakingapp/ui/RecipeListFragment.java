@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,6 +31,9 @@ public class RecipeListFragment extends Fragment implements android.app.LoaderMa
     private static final int RECIPE_LIST_ASYNC_LOADER_ID = 3;
     private OnRecipeClickListener mOnRecipeClickListerner;
 
+    // this idling resource will be used by Espresso to wait for and synchronize with RetroFit Network call
+    CountingIdlingResource espressoTestIdlingResource = new CountingIdlingResource("Network_Call");
+
     public interface OnRecipeClickListener{
         void onRecipeClicked(Recipe recipe);
     }
@@ -50,6 +54,8 @@ public class RecipeListFragment extends Fragment implements android.app.LoaderMa
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.recipe_list_fragment,container,false);
         ButterKnife.bind(this,rootView);
+        // increment idling resource for telling Espresso wait for the RetroFit network's call
+        espressoTestIdlingResource.increment();
         getLoaderManager().initLoader(RECIPE_LIST_ASYNC_LOADER_ID,null,this);
         return  rootView;
 
@@ -68,10 +74,15 @@ public class RecipeListFragment extends Fragment implements android.app.LoaderMa
         RecyclerView.LayoutManager llm = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
         mRecipeListRecycleView.setLayoutManager(llm);
         mRecipeListRecycleView.setAdapter(new RecipeListRecycleViewAdapter(data,getActivity(),mOnRecipeClickListerner));
+        espressoTestIdlingResource.decrement();
     }
 
     @Override
     public void onLoaderReset(android.content.Loader<List<Recipe>> loader) {
 
+    }
+
+    public CountingIdlingResource getEspressoIdlingResourceForMainActivity() {
+        return espressoTestIdlingResource;
     }
 }
