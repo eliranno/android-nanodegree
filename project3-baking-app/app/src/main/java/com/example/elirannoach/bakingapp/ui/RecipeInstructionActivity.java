@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -25,6 +26,8 @@ public class RecipeInstructionActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recipe_instruction_activity);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         mBottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -53,19 +56,33 @@ public class RecipeInstructionActivity extends AppCompatActivity {
             }
         });
         mRecipe = (Recipe) getIntent().getParcelableExtra("recipe");
-        if (savedInstanceState==null)
-            mRecipeStepNumber = 0;
-        else
-            mRecipeStepNumber = savedInstanceState.getInt("step");
-        RecipeInstructionFragment recipeInstructionFragment = new RecipeInstructionFragment();
-        recipeInstructionFragment.setRecipe(mRecipe,mRecipeStepNumber);
-        FrameLayout frame = (FrameLayout) findViewById(R.id.recipe_instruction_fragment_container_id);
-        getFragmentManager().beginTransaction().add(frame.getId(),recipeInstructionFragment).commit();
+        if(savedInstanceState!=null)
+            mRecipeStepNumber = savedInstanceState.getInt("step",0);
+        if(getFragmentManager().findFragmentById(R.id.recipe_instruction_fragment_container_id)==null) {
+            RecipeInstructionFragment recipeInstructionFragment = new RecipeInstructionFragment();
+            recipeInstructionFragment.setRecipe(mRecipe, 0);
+            FrameLayout frame = (FrameLayout) findViewById(R.id.recipe_instruction_fragment_container_id);
+            getFragmentManager().beginTransaction().replace(frame.getId(), recipeInstructionFragment).commit();
+        }
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         outState.putInt("step",mRecipeStepNumber);
         super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                Intent intent = new Intent(this,MainActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return false;
+        }
+
     }
 }

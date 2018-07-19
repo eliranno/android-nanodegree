@@ -26,9 +26,12 @@ public class MainActivity extends AppCompatActivity implements RecipeListFragmen
         setContentView(R.layout.activity_main);
         mIsTwoPane = findViewById(R.id.tablet_linear_layout_id) != null;
         if (!mIsTwoPane) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.main_activity_frame_id, new RecipeListFragment())
-                    .commit();
+            // only create fragment if activity is started for the first time
+            if(savedInstanceState==null) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.main_activity_frame_id, new RecipeListFragment())
+                        .commit();
+            }
         }
         else{
             mBottomNavigationView = (BottomNavigationView)
@@ -95,5 +98,10 @@ public class MainActivity extends AppCompatActivity implements RecipeListFragmen
             getFragmentManager().beginTransaction().replace(R.id.tablet_recipe_instruction_fragment_container_id,fragment).commit();
 
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
